@@ -2,7 +2,7 @@ set nu
 " Set color scheme
 
 set t_Co=256
-colorscheme molokai
+colorscheme nord
 
 call plug#begin('~/.cache/plugged')
     Plug 'davidhalter/jedi-vim', {'for': 'python'}
@@ -10,6 +10,8 @@ call plug#begin('~/.cache/plugged')
     Plug 'ervandew/supertab'
     Plug 'scrooloose/nerdtree'
     Plug 'Yggdroot/indentLine'
+    Plug 'nvie/vim-flake8', {'for': 'python'}
+    Plug 'arcticicestudio/nord-vim'
 call plug#end()
 
 let NERDTreeShowHidden = 1
@@ -21,9 +23,11 @@ set encoding=utf-8
 set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set fileformats=unix,dos,mac
 
-set completeopt-=preview
-
+" jedivim
+let g:jedi#popup_on_dot = 0
 let g:jedi#completions_enabled = 0
+let g:jedi#popup_select_first = 0
+
 autocmd FileType python setlocal completeopt-=preview
 
 set title
@@ -46,3 +50,17 @@ if OSTYPE == "Darwin\n"
     :set term=xterm-256color 
     :syntax on 
 endif
+
+"引数なしでvimを開いたらNERDTreeを起動、
+""引数ありならNERDTreeは起動せず、引数で渡されたファイルを開く。
+autocmd vimenter * if !argc() | NERDTree | endif
+
+"他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+" Flake8
+autocmd BufWritePost *.py call Flake8()
+let g:flake8_quickfix_location="topleft" " Quickfixの位置
+let g:flake8_quickfix_height=7 " Quickfixの高さ
+let g:flake8_show_in_gutter=1  " 左端にシンボルを表示
+let g:flake8_show_in_file=1  " ファイル内にマークを表示
