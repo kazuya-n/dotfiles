@@ -57,8 +57,9 @@ autocmd vimenter * if !argc() | NERDTree | endif
 
 "他のバッファをすべて閉じた時にNERDTreeが開いていたらNERDTreeも一緒に閉じる。
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
 " Flake8
+" automatically close quickfix if it's the only window left"
+autocmd WinEnter * if winnr('$') == 1 && &buftype == "quickfix" | quit | endif
 autocmd BufWritePost *.py call Flake8()
 let g:flake8_quickfix_location="topleft" " Quickfixの位置
 let g:flake8_quickfix_height=7 " Quickfixの高さ
