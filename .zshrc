@@ -6,7 +6,7 @@ export LD_LIBRARY_PATH=$HOME/cuda/lib64:$LD_LIBRARY_PATH
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
-PROMPT='%F{5}%n: %c $ %f'
+PROMPT='%F{3}%n: %c $ %f'
 autoload -U compinit
 compinit
 
@@ -28,3 +28,10 @@ linux*)
   alias ls='ls -F --color'
   ;;
 esac
+
+# cdを使わずにディレクトリを移動できる
+setopt auto_cd
+# "cd -"の段階でTabを押すと、ディレクトリの履歴が見れる
+setopt auto_pushd
+# コマンドの打ち間違いを指摘してくれる
+setopt correct
