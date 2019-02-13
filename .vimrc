@@ -25,6 +25,7 @@ set guifont=DroidSansMono\ Nerd\ Font\ 11
 let g:airline_powerline_fonts = 1
 
 nnoremap <silent><C-e> :NERDTreeToggle<CR>
+nnoremap <silent><C-r> :TagbarToggle<CR>
 
 let g:tagbar_width = 30
 let g:tagbar_autoshowtag = 1
