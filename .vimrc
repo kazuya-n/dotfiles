@@ -2,11 +2,10 @@ set nu
 " Set color scheme
 
 set t_Co=256
+set conceallevel=3
 colorscheme nord
 
 call plug#begin('~/.cache/plugged')
-    Plug 'davidhalter/jedi-vim', {'for': 'python'}
-    Plug 'zchee/deoplete-jedi'
     Plug 'ervandew/supertab'
     Plug 'scrooloose/nerdtree'
     Plug 'Yggdroot/indentLine'
@@ -14,38 +13,26 @@ call plug#begin('~/.cache/plugged')
     Plug 'arcticicestudio/nord-vim'
     Plug 'nathanaelkane/vim-indent-guides'
     Plug 'vim-airline/vim-airline'
+    Plug 'scrooloose/nerdtree'
     Plug 'ryanoasis/vim-devicons'
-    Plug 'majutsushi/tagbar'
+    Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 call plug#end()
 
-let NERDTreeShowHidden = 1
 let g:indentLine_char = '>'
 
-set guifont=DroidSansMono\ Nerd\ Font\ 11
-let g:airline_powerline_fonts = 1
-
-nnoremap <silent><C-e> :NERDTreeToggle<CR>
-nnoremap <silent><C-r> :TagbarToggle<CR>
-
-let g:tagbar_width = 30
-let g:tagbar_autoshowtag = 1
+set guifont=DroidSansMono\ Nerd\ Font\ 14
 
 set encoding=utf-8
 set fileencodings=iso-2022-jp,euc-jp,sjis,utf-8
 set fileformats=unix,dos,mac
 
 " jedivim
-set completeopt=menuone                        " $BJd408uJd$r8F$S=P$9$H$->o$K%]%C%W%"%C%W%a%K%e!<$r;H$&(B
-let g:jedi#popup_on_dot           = 0 " $B%I%C%H(B(.)$B$rF~NO$7$?$H$-<+F0$GJd40$7$J$$(B
-let g:jedi#popup_select_first     = 0 " $BJd408uJd$N(B1$BHVL\$rA*Br$7$J$$(B
-let g:jedi#show_call_signatures   = 0 " $B4X?t$N0z?tI=<($rL58z(B($B%]%C%W%"%C%W$N%P%0$rF'$s$@$3$H$,$"$k$?$a(B)
-autocmd FileType python setlocal omnifunc=jedi#completions   " $BJd40%(%s%8%s$O(Bjedi$B$r;H$&(B
+set completeopt=menuone                        " 補完候補を呼び出すとき常にポップアップメニューを使う
 
 let g:SuperTabContextDefaultCompletionType = "context"
 let g:SuperTabDefaultCompletionType = "<c-n>"
 
 set title
-set ambiwidth=double
 set tabstop=4
 set expandtab
 set shiftwidth=4
@@ -65,17 +52,49 @@ if OSTYPE == "Darwin\n"
     :syntax on 
 endif
 
-"$B0z?t$J$7$G(Bvim$B$r3+$$$?$i(BNERDTree$B$r5/F0!"(B
-""$B0z?t$"$j$J$i(BNERDTree$B$O5/F0$;$:!"0z?t$GEO$5$l$?%U%!%$%k$r3+$/!#(B
-autocmd vimenter * if !argc() | NERDTree | endif
-
-"$BB>$N%P%C%U%!$r$9$Y$FJD$8$?;~$K(BNERDTree$B$,3+$$$F$$$?$i(BNERDTree$B$b0l=o$KJD$8$k!#(B
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 " Flake8
 " automatically close quickfix if it's the only window left"
 autocmd WinEnter * if winnr('$') == 1 && &buftype == "quickfix" | quit | endif
 autocmd BufWritePost *.py call Flake8()
-let g:flake8_quickfix_location="topleft" " Quickfix$B$N0LCV(B
-let g:flake8_quickfix_height=7 " Quickfix$B$N9b$5(B
-let g:flake8_show_in_gutter=1  " $B:8C<$K%7%s%\%k$rI=<((B
-let g:flake8_show_in_file=1  " $B%U%!%$%kFb$K%^!<%/$rI=<((B
+let g:flake8_quickfix_location="topleft" " Quickfixの位置
+let g:flake8_quickfix_height=7 " Quickfixの高さ
+let g:flake8_show_in_gutter=1  " 左端にシンボルを表示
+let g:flake8_show_in_file=1  " ファイル内にマークを表示
+
+" NERDTree
+autocmd FileType nerdtree setlocal nolist
+
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+map <C-e> :NERDTreeToggle<CR>
+
+let g:NERDTreeDirArrows = 1
+let NERDTreeWinSize=32
+" let NERDTreeShowHidden = 1
+
+"vim-nerdtree-syntax-highlight
+let g:airline_powerline_fonts = 1
+
+let s:rspec_red = 'FE405F'
+let s:git_orange = 'F54D27'
+let g:NERDTreeExactMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreeExactMatchHighlightColor['.gitignore'] = s:git_orange " sets the color for .gitignore files
+let g:NERDTreePatternMatchHighlightColor = {} " this line is needed to avoid error
+let g:NERDTreePatternMatchHighlightColor['.*_spec\.rb$'] = s:rspec_red " sets the color for files ending with _spec.rb
+
+" vim-devicons
+let g:webdevicons_conceal_nerdtree_brackets = 1
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+
+" dir-icons
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+let g:WebDevIconsUnicodeDecorateFolderNodesDefaultSymbol = ''
+let g:DevIconsDefaultFolderOpenSymbol = ''
+" file-icons
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
