@@ -1,6 +1,3 @@
-set nu
-" Set color scheme
-
 set t_Co=256
 set conceallevel=3
 colorscheme nord
@@ -16,7 +13,18 @@ call plug#begin('~/.cache/plugged')
     Plug 'scrooloose/nerdtree'
     Plug 'ryanoasis/vim-devicons'
     Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+    if has('nvim')
+	    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+	else
+	    Plug 'Shougo/deoplete.nvim'
+	    Plug 'roxma/nvim-yarp'
+	    Plug 'roxma/vim-hug-neovim-rpc'
+	endif
+    Plug 'deoplete-plugins/deoplete-jedi'
 call plug#end()
+
+let g:deoplete#enable_at_startup = 1 
+" deoplete
 
 let g:indentLine_char = '>'
 
@@ -98,3 +106,26 @@ let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['html'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['css'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['md'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['txt'] = ''
+
+if !argc()
+    autocmd vimenter * NERDTree|normal gg3j
+endif
+
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+function! HardMode ()
+  noremap <Up> <Nop>
+  noremap <Down> <Nop>
+  noremap <Left> <Nop>
+  noremap <Right> <Nop>
+endfunction
+
+function! EasyMode ()
+  noremap <Up> <Up>
+  noremap <Down> <Down>
+  noremap <Left> <Left>
+  noremap <Right> <Right>
+endfunction
+
+command! HardMode call HardMode()
+command! EasyMode call EasyMode()
